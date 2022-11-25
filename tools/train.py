@@ -6,6 +6,8 @@ import os.path as osp
 import time
 import warnings
 
+import models
+import datasets
 import mmcv
 import torch
 import torch.distributed as dist
