@@ -13,7 +13,7 @@ from mmcv import Config, DictAction
 from mmcv.runner import get_dist_info, init_dist, set_random_seed
 from mmcv.utils import get_git_hash
 
-os.environ['PYTHON_PATH'] = '/content/edgelab/edgelab'
+os.environ['PYTHONPATH'] = '/content/edgelab/edgelab'
 
 
 def parse_args():
