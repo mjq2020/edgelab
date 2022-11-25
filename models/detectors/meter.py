@@ -24,7 +24,7 @@ class PFLD(BasePose):
         x = self.backbone(img)
         if return_loss:
             return {'loss': self.computer_loss(x, img_metas)}
-        return {'result': x}
+        return {'loss': self.computer_loss(x, img_metas)}
 
     def show_result(self, **kwargs):
         pass
