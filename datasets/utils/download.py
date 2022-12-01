@@ -8,7 +8,7 @@ def check_compress(file):
         'tar': "tar -xf {} -C ..",
         "gz": "gzip -d {} ..",
         "tgz": "tar -zxf {} -C ..",
-        "zip": "unzip -n {} -d ..",
+        "zip": "unzip -n -q {} -d ..",
         "rar": "unrar e -o- -y {} .."
     }
     if 'tar.gz' in file: return ["tar -zxf {} -C .."]
@@ -54,6 +54,7 @@ def download(links: List or AnyStr,
         # Dlownd compress dataset
         cmd = f"curl -L {link} -o {file_name} --retry 3 -C -"
         os.system(cmd)
+        print(f'unpacking {file_name}')
         for de in unzip:
             os.system(de)
         os.system(f'touch .{file_name}')
