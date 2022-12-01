@@ -88,10 +88,14 @@ def test_network():
 
 
 def qure_gpu():
-    if os.system('nvidia-smi |grep Driver') != 0:
-        return False
-    else:
+    p = subprocess.Popen(args='lspci |grep -i nvidia',
+                         stdout=subprocess.PIPE,
+                         encoding='utf8',
+                         shell=True)
+    data = p.stdout.read()
+    if 'NVIDIA' in data.upper():
         return True
+    return False
 
 
 def download_file(link, path):
@@ -309,8 +313,8 @@ def install_pyncnn():
     command(cmd)
 
     # install
-    os.chdir(ncnn_dir)
-    command(f'cd python && {pip} install -e .' + pip_mirror)
+    os.chdir(project_path)
+    command(f'{pip} install ncnn' + pip_mirror)
 
     path_ls = []
     path_ls.append(osp.join(ncnn_dir, 'build', 'tools', 'onnx'))
@@ -354,9 +358,9 @@ def check_env():
 
     check_list['torch'] = 'OK' if command(f"{python_bin} -c 'import torch'",
                                           1) else 'faile'
-    check_list['torch'] = 'OK' if command(
+    check_list['torchvision'] = 'OK' if command(
         f"{python_bin} -c 'import torchvision'", 1) else 'faile'
-    check_list['torch'] = 'OK' if command(
+    check_list['torchaudio'] = 'OK' if command(
         f"{python_bin} -c 'import torchaudio'", 1) else 'faile'
 
     check_list['mmcv'] = 'OK' if command(f"{python_bin} -c 'import mmcv'",

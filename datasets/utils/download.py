@@ -30,6 +30,8 @@ def defile(files, store_dir):
 def download(links: List or AnyStr,
              store_path: AnyStr or __path__,
              unzip_dir=None):
+    if isinstance(links,str):
+        links=[links]
     os.chdir(store_path)
     if not os.path.exists('download'):
         os.mkdir('download')
@@ -58,26 +60,36 @@ def download(links: List or AnyStr,
 
 
 def check_file(path, store_dir=None, data_name=None):
-    if 'https://' in path or 'http://' in path:
-        if isinstance(path, list):
-            pass
-        elif isinstance(path, str):
-            path = [path]
-        else:
-            raise TypeError(
-                'The download link must be a list or a string, but got {} type'
-                .format(getattr(type(path), '__name__', repr(type(path)))))
-        download_dir = f"{os.environ['HOME']}/datasets" if platform.system(
-        ) == 'Linux' and not store_dir else 'D:\datasets' if not store_dir else store_dir
-        download_dir = os.path.join(download_dir,
-                                    data_name) if data_name else download_dir
-        if not os.path.exists(download_dir):
-            os.makedirs(download_dir, exist_ok=True)  # makedir the datasets
+    download_dir = None
+    if isinstance(path, (list, tuple)):
+        if 'https://' in path[0] or 'http://' in path[0]:
+            download_dir = f"{os.environ['HOME']}/datasets" if platform.system(
+            ) == 'Linux' and not store_dir else 'D:\datasets' if not store_dir else store_dir
+            download_dir = os.path.join(
+                download_dir, data_name) if data_name else download_dir
+            if not os.path.exists(download_dir):
+                os.makedirs(download_dir,
+                            exist_ok=True)  # makedir the datasets
 
-        download(path, download_dir, data_name)
-
-    else:
+            download(path, download_dir, data_name)
+    elif isinstance(path, str):
         if path.startswith('~'):
             path = path.replace('~', os.environ['HOME'])
         download_dir = path
+        if 'https://' in path or 'http://' in path:
+            download_dir = f"{os.environ['HOME']}/datasets" if platform.system(
+            ) == 'Linux' and not store_dir else 'D:\datasets' if not store_dir else store_dir
+            download_dir = os.path.join(
+                download_dir, data_name) if data_name else download_dir
+            if not os.path.exists(download_dir):
+                os.makedirs(download_dir,
+                            exist_ok=True)  # makedir the datasets
+
+            download(path, download_dir, data_name)
+
+    else:
+        raise TypeError(
+            'The download link must be a list or a string, but got {} type'.
+            format(getattr(type(path), '__name__', repr(type(path)))))
+
     return download_dir
